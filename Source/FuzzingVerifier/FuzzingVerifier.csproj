@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DafnyCore\DafnyCore.csproj" />
+      <ProjectReference Include="..\DafnyDriver\DafnyDriver.csproj" />
     </ItemGroup>
 
 </Project>

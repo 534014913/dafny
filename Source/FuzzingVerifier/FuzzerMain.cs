@@ -2,8 +2,13 @@
 
 namespace FuzzingVerifier;
   
-class Fuzzer {
-  static void Main(string[] args) {
+public class Fuzzer {
+  public static int Main(string[] args) {
     Console.WriteLine("This is the fuzzer");
+    var ret = DafnyDriver.ThreadMain(args);
+    return ret;
+  }
+
+  private static DafnyDriver.CommandLineArgumentsResult ProcessFuzzingArguments() {
   }
 }
