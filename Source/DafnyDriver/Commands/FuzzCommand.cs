@@ -22,5 +22,6 @@ class FuzzCommand : ICommandSpec {
 
   public void PostProcess(DafnyOptions dafnyOptions, Options options, InvocationContext context) {
     dafnyOptions.Compile = false;
+    dafnyOptions.Fuzz = true;
   }
 }

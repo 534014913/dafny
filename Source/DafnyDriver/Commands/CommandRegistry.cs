@@ -42,6 +42,7 @@ static class CommandRegistry {
     AddCommand(new GenerateTestsCommand());
     AddCommand(new DeadCodeCommand());
     AddCommand(new AuditCommand());
+    AddCommand(new FuzzCommand());
 
     FileArgument = new Argument<FileInfo>("file", "input file");
   }
@@ -80,6 +81,7 @@ static class CommandRegistry {
       command.SetHandler(CommandHandler);
     }
 
+    // this is the error handling case
     if (arguments.Length != 0) {
       var first = arguments[0];
       var keywordForNewMode = commandToSpec.Keys.Select(c => c.Name).
@@ -120,7 +122,7 @@ static class CommandRegistry {
           dafnyOptions.AddFile(file.FullName);
         }
       }
-
+      
       foreach (var option in command.Options) {
         var value = context.ParseResult.GetValueForOption(option);
         options.OptionArguments[option] = value;
@@ -134,6 +136,7 @@ static class CommandRegistry {
     var builder = new CommandLineBuilder(rootCommand).UseDefaults();
     builder = AddDeveloperHelp(rootCommand, builder);
 
+    // this is where verify changes to false if we set flag to resolve, InvokeAsync() will call the anonymous handler
 #pragma warning disable VSTHRD002
     var exitCode = builder.Build().InvokeAsync(arguments).Result;
 #pragma warning restore VSTHRD002

@@ -172,6 +172,7 @@ namespace Microsoft.Dafny {
     }
 
     /// <summary>
+    /// SUPER IMPORTANT
     /// Returns null on success, or an error string otherwise.
     /// </summary>
     public static string ParseCheck(IList<DafnyFile/*!*/>/*!*/ files, string/*!*/ programName, ErrorReporter reporter, out Program program)

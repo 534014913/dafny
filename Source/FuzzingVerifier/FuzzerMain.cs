@@ -9,6 +9,4 @@ public class Fuzzer {
     return ret;
   }
 
-  private static DafnyDriver.CommandLineArgumentsResult ProcessFuzzingArguments() {
-  }
 }

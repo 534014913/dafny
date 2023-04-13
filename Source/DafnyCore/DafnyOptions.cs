@@ -260,6 +260,7 @@ NoGhost - disable printing of functions, ghost methods, and proof
 
     public PrintModes PrintMode = PrintModes.Everything; // Default to printing everything
     public bool DafnyVerify = true;
+    public bool Fuzz = false;
     public string DafnyPrintResolvedFile = null;
     public List<string> DafnyPrintExportedViews = new List<string>();
     public bool Compile = true;
