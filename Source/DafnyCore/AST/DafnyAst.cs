@@ -15,6 +15,7 @@ using System.Numerics;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading;
+using DafnyCore.Fuzzer;
 using Microsoft.Boogie;
 using Action = System.Action;
 
@@ -341,6 +342,11 @@ namespace Microsoft.Dafny {
         : new List<Node> { Prev });
 
     public override IEnumerable<Node> PreResolveChildren => Children;
+
+    //TODO: YILAI currently a naive implementation
+    public Attributes Mutate(MutationKernel mutKernel) {
+      return new Attributes(this.Name, this.Args, this.Prev);
+    }
   }
 
   public static class AttributesExtensions {

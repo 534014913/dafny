@@ -6,7 +6,9 @@ using System.Numerics;
 using System.Linq;
 using System.Diagnostics;
 using System.Security.AccessControl;
+using DafnyCore.Fuzzer;
 using Microsoft.Boogie;
+using Microsoft.Boogie.VCExprAST;
 
 namespace Microsoft.Dafny;
 
@@ -820,6 +822,7 @@ public abstract class Expression : TokenNode {
 
   public override IEnumerable<Node> Children => SubExpressions;
   public override IEnumerable<Node> PreResolveChildren => Children;
+  // public abstract Expression Mutate(MutationKernel mutKernel);
 }
 
 public class LiteralExpr : Expression {
@@ -2982,6 +2985,15 @@ public class AttributedExpression : TokenNode, IAttributeBearingDeclaration {
     new List<Node>() { E });
 
   public override IEnumerable<Node> PreResolveChildren => Children;
+
+  public AttributedExpression Mutate(MutationKernel mutKernel) {
+    //TODO: YILAI should label and attributes also change? where is the information come from 
+    // Expression newE = E.Mutate(mutKernel);
+    AssertLabel newLabel = Label.Mutate(mutKernel);
+    Attributes newAttributes = attributes.Mutate(mutKernel);
+    // return new AttributedExpression(newE, newLabel, newAttributes);
+    throw new NotImplementedException();
+  }
 }
 
 public class FrameExpression : TokenNode, IHasUsages {

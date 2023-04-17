@@ -401,7 +401,34 @@ namespace Microsoft.Dafny {
         options.Printer.ErrorWriteLine(Console.Out, err);
       } else if (dafnyProgram != null && !options.NoResolve && options.Fuzz) {
         Console.WriteLine("Start Fuzzing");
-        Fuzzer.MainFuzzingLoop(dafnyFiles, programName, reporter, dafnyProgram);
+        while (true) { 
+          MutationKernel mutationKernel = new MutationKernel();
+          Program mutated = Fuzzer.MainFuzzingLoop(dafnyFiles, programName, reporter, dafnyProgram, mutationKernel);
+          
+          var boogiePrograms = Translate(engine.Options, dafnyProgram).ToList();
+
+          string baseName = cce.NonNull(Path.GetFileName(dafnyFileNames[^1]));
+          var (verified, outcome, moduleStats) = await BoogieAsync(options, baseName, boogiePrograms, programId);
+          bool compiled;
+          try {
+            compiled = Compile(dafnyFileNames[0], otherFileNames, dafnyProgram, outcome, moduleStats, verified);
+          } catch (UnsupportedFeatureException e) {
+            if (!options.Backend.UnsupportedFeatures.Contains(e.Feature)) {
+              throw new Exception($"'{e.Feature}' is not an element of the {options.Backend.TargetId} compiler's UnsupportedFeatures set");
+            }
+            reporter.Error(MessageSource.Compiler, e.Token, e.Message);
+            compiled = false;
+          }
+
+          exitValue = verified && compiled ? ExitValue.SUCCESS : !verified ? ExitValue.VERIFICATION_ERROR : ExitValue.COMPILE_ERROR;
+          if (exitValue == ExitValue.SUCCESS) {
+            Console.WriteLine("--------------------Soundness Bug Found--------------------");
+            Dafny.Main.MaybePrintProgram(mutated, "-", false);
+            Console.WriteLine("-----------------------------------------------------------");
+          }
+
+          return exitValue;
+        }
       } else if (dafnyProgram != null && !options.NoResolve && !options.NoTypecheck
                  && options.DafnyVerify) {
 

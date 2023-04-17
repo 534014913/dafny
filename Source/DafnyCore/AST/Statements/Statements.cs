@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Policy;
+using DafnyCore.Fuzzer;
+using Microsoft.Boogie.VCExprAST;
 
 namespace Microsoft.Dafny;
 
@@ -208,7 +210,7 @@ public class LList<T> {
 public class Label {
   public readonly IToken Tok;
   public readonly string Name;
-  string uniqueId = null;
+  public string uniqueId = null;
   public string AssignUniqueId(FreshIdGenerator idGen) {
     if (uniqueId == null) {
       uniqueId = idGen.FreshNumericId("label");
@@ -232,6 +234,14 @@ public class AssertLabel : Label {
     Contract.Requires(tok != null);
     Contract.Requires(label != null);
   }
+
+  //TODO: YILAI currently a naive implementation
+  public AssertLabel Mutate(MutationKernel mutKernel) {
+    AssertLabel assertLabel = new AssertLabel(this.Tok, this.Name);
+    assertLabel.uniqueId = this.uniqueId;
+    assertLabel.E = this.E;
+    return assertLabel;
+  } 
 }
 
 public class RevealStmt : Statement, ICloneable<RevealStmt>, ICanFormat {
