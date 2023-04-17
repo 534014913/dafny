@@ -24,6 +24,7 @@ using System.Linq;
 using Microsoft.Boogie;
 using Bpl = Microsoft.Boogie;
 using System.Diagnostics;
+using DafnyCore.Fuzzer;
 using Microsoft.Dafny.Plugins;
 
 namespace Microsoft.Dafny {
@@ -398,8 +399,11 @@ namespace Microsoft.Dafny {
       if (err != null) {
         exitValue = ExitValue.DAFNY_ERROR;
         options.Printer.ErrorWriteLine(Console.Out, err);
+      } else if (dafnyProgram != null && !options.NoResolve && options.Fuzz) {
+        Console.WriteLine("Start Fuzzing");
+        Fuzzer.MainFuzzingLoop(dafnyFiles, programName, reporter, dafnyProgram);
       } else if (dafnyProgram != null && !options.NoResolve && !options.NoTypecheck
-          && options.DafnyVerify) {
+                 && options.DafnyVerify) {
 
         var boogiePrograms = Translate(engine.Options, dafnyProgram).ToList();
 
